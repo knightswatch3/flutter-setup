@@ -1,0 +1,88 @@
+FROM arm64v8/centos
+
+RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-* &&\
+    sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+
+RUN dnf update -y
+
+RUN yum update -y
+ 
+RUN yum install curl git vim zip unzip xz git wget -y && \
+    yum install mesa-libGLU firefox clang cmake -y
+
+RUN pwd | cat
+
+RUN git clone https://github.com/flutter/flutter.git
+
+ENV PATH="${PATH}:/flutter/bin"
+
+ENV PATH=="$PATH:/android/cmdline-tools/latest/bin"
+
+ENV ANDROID_HOME=/android
+
+ENV CHROME_EXECUTABLE=/usr/bin/firefox
+
+RUN echo export PATH="$PATH:/flutter/bin" >> $HOME/.bashrc
+
+RUN source $HOME/.bashrc
+
+RUN echo $PATH
+
+RUN flutter
+
+RUN flutter precache
+
+WORKDIR /etc/yum.repos.d
+ 
+RUN wget https://rpmfind.net/linux/centos/8-stream/PowerTools/aarch64/os/Packages/ninja-build-1.8.2-1.el8.aarch64.rpm
+
+RUN rpm -i ninja-build-1.8.2-1.el8.aarch64.rpm
+
+RUN yum install gtk3
+
+RUN yum install gtk3-devel -y && \
+    yum install java-11-openjdk-devel -y
+
+RUN flutter doctor
+
+# Enable Android development
+
+WORKDIR /
+
+RUN mkdir android
+
+WORKDIR /android
+
+RUN wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip
+
+RUN unzip *.zip
+
+RUN mkdir latest
+
+WORKDIR /android/cmdline-tools
+
+RUN mv * ../latest 
+
+RUN mv ../latest .
+
+RUN echo "y" | sdkmanager "platforms;android-29" 
+
+RUN sdkmanager --update
+
+# RUN RUN echo "y" | sdkmanager "build-tools;28.0.3" \
+#     "emulator" \
+#     "platform-tools" \
+#     "platforms;android-28" \
+#     "system-images;android-28;google_apis;x86_64" \
+#     "tools" >/dev/null
+RUN flutter config --enable-android
+ 
+# Enable web
+
+RUN flutter channel master
+
+RUN flutter upgrade
+
+RUN flutter config --enable-web
+
+CMD flutter doctor --android-licenses  
