@@ -36,7 +36,8 @@
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 
 	// Uncomment the next line to run commands after the container is created - for example installing curl.
-	"postCreateCommand": "flutter run -d web-server --web-port 4040 --web-hostname 0.0.0.0"
+	// "postCreateCommand": "flutter run -d web-server --web-port 4040 --web-hostname 0.0.0.0"
+	"postCreateCommand": "flutter pub get ; PORT=4040 ; fuser -k 4040/tcp ; python3 -m http.server $PORT"
 
 	// Uncomment when using a ptrace-based debugger like C++, Go, and Rust
 	// "runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],

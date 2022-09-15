@@ -10,7 +10,7 @@
             "request": "launch",
             "type": "dart",
             "program": "/root/podcast/lib/main.dart",
-            "args": ["--web-port=4040"]
+            "args": ["--web-port=4041"]
         },
         {
             "name": "podcast (profile mode)",

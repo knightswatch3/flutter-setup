@@ -1,7 +1,7 @@
 # Flutter Web Docker Example Dockerfile
 
 # Install dependencies
-FROM arm64v8/centos AS build-env
+FROM amd64/centos 
 RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-* &&\
     sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
 
