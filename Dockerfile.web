@@ -1,0 +1,85 @@
+# Flutter Web Docker Example Dockerfile
+
+# Install dependencies
+FROM arm64v8/centos AS build-env
+RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-* &&\
+    sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+
+RUN dnf update -y
+
+RUN yum update -y
+ 
+RUN yum install curl git vim zip unzip xz git wget -y && \
+    yum install mesa-libGLU firefox clang cmake nginx rsync python38 -y
+
+RUN pwd | cat
+
+# Clone the flutter repo
+RUN git clone https://github.com/flutter/flutter.git 
+
+# Set flutter path
+
+ENV PATH="${PATH}:/flutter/bin"
+
+ENV PATH="$PATH:/android/cmdline-tools/latest/bin"
+
+ENV ANDROID_HOME=/android
+
+ENV CHROME_EXECUTABLE=/usr/bin/firefox
+
+RUN echo export PATH="$PATH:/flutter/bin" >> $HOME/.bashrc
+
+
+RUN source $HOME/.bashrc
+
+WORKDIR /etc/yum.repos.d
+ 
+RUN wget https://rpmfind.net/linux/centos/8-stream/PowerTools/aarch64/os/Packages/ninja-build-1.8.2-1.el8.aarch64.rpm
+
+RUN rpm -i ninja-build-1.8.2-1.el8.aarch64.rpm
+
+RUN yum install gtk3
+
+RUN yum install gtk3-devel -y && \
+    yum install java-11-openjdk-devel -y
+
+RUN flutter doctor
+
+# Enable flutter web
+RUN flutter channel master
+RUN flutter upgrade
+RUN flutter config --enable-web
+
+# Run flutter doctor
+RUN flutter doctor -v
+
+# Copy the app files
+# COPY ./podcast/ /root/podcast/
+# WORKDIR /workspaces/flutter-setup/podcast
+# COPY local files
+
+COPY ./podcast/ /root/podcast/
+
+RUN rm -rf /root/podcast/build/
+
+WORKDIR /root/podcast/
+
+# RUN echo ls
+
+# Get App Dependencies
+# RUN flutter pub get
+
+# # Build the app for the web
+# RUN flutter build web
+
+# # Document the exposed port
+EXPOSE 4040
+
+RUN flutter pub get packages
+
+# Start the web server
+# SHELL ["/bin/sh","-c"]
+
+# CMD "sh -x /workspaces/flutter-setup/podcast/server.sh"
+
+# CMD "flutter run -d web-server --web-port 8080 --web-hostname 0.0.0.0"

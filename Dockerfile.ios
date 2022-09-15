@@ -45,6 +45,12 @@ RUN yum install gtk3-devel -y && \
 
 RUN flutter doctor
 
+RUN mkdir /root/source-code-ios
+
+WORKDIR /root/source-code-ios
+
+COPY ./src /root/source-code-ios/
+
 # Enable Android development
 
 WORKDIR /
@@ -75,14 +81,14 @@ RUN sdkmanager --update
 #     "platforms;android-28" \
 #     "system-images;android-28;google_apis;x86_64" \
 #     "tools" >/dev/null
-RUN flutter config --enable-android
+RUN flutter config --enable-ios
  
 # Enable web
 
 RUN flutter channel master
 
-RUN flutter upgrade
+RUN flutter upgrade 
 
-RUN flutter config --enable-web
+ENV CONTAINER_FOR="ios"
 
-CMD flutter doctor --android-licenses  
+CMD flutter doctor --android-licenses   

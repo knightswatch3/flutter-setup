@@ -1,0 +1,30 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [ 
+        {
+            "name": "podcast",
+            "cwd": "/root/podcast",
+            "request": "launch",
+            "type": "dart",
+            "program": "/root/podcast/lib/main.dart",
+            "args": ["--web-port=4040"]
+        },
+        {
+            "name": "podcast (profile mode)",
+            "cwd": "podcast",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "podcast (release mode)",
+            "cwd": "podcast",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}
